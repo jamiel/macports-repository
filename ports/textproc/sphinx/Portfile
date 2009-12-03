@@ -1,0 +1,59 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; truncate-lines: t; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:et:sw=4:ts=4:sts=4
+# $Id: Portfile 58433 2009-09-28 18:18:09Z snc@macports.org $
+
+PortSystem 1.0
+
+name			    sphinx
+version			    0.9.9
+categories		    textproc net
+maintainers		    brett openmaintainer
+
+platforms		    darwin
+description		    Sphinx is a full-text search engine
+long_description    Sphinx is a full-text search engine, meant to provide \
+                    fast, size-efficient and relevant fulltext search \
+                    functions to other applications. Sphinx was specially \
+                    designed to integrate well with SQL databases and \
+                    scripting languages. Currently built-in data sources \
+                    support fetching data either via direct connection to \
+                    MySQL, or from an XML pipe.
+
+homepage		    http://www.sphinxsearch.com
+master_sites    	${homepage}/downloads/
+checksums       	sha1 8c739b96d756a50972c27c7004488b55d7458015
+
+depends_lib		    path:bin/mysql_config5:mysql5
+configure.args      --mandir=${prefix}/share/man \
+                    --datadir=${prefix}/share/doc \
+                    --sysconfdir=${prefix}/etc/sphinx \
+		            --with-mysql-includes=${prefix}/include/mysql5/mysql \
+		            --with-mysql-libs=${prefix}/lib/mysql5/mysql
+
+test.run            yes
+
+variant postgres conflicts postgresql83 postgresql84 description {Enable PostgreSQL support for old PgSQL 8.2} {
+    depends_lib-append      port:postgresql82
+    depends_lib-delete      path:bin/mysql_config5:mysql5
+    configure.args-append   --with-pgsql
+    configure.args-append   --with-pgsql-includes=${prefix}/include/postgresql82
+    configure.args-append   --with-pgsql-libs=${prefix}/lib/postgresql82
+    configure.args-delete   --with-mysql-includes
+}
+
+variant postgresql83 conflicts postgres postgresql84 description {Enable PostgreSQL support for newer PgSQL v8.3} {
+    depends_lib-append      port:postgresql83
+    depends_lib-delete      path:bin/mysql_config5:mysql5
+    configure.args-append   --with-pgsql
+    configure.args-append   --with-pgsql-includes=${prefix}/include/postgresql83
+    configure.args-append   --with-pgsql-libs=${prefix}/lib/postgresql83
+    configure.args-delete   --with-mysql-includes
+}
+
+variant postgresql84 conflicts postgres postgresql83 description {Enable PostgreSQL support for newer PgSQL v8.4} {
+    depends_lib-append      port:postgresql84
+    depends_lib-delete      path:bin/mysql_config5:mysql5
+    configure.args-append   --with-pgsql
+    configure.args-append   --with-pgsql-includes=${prefix}/include/postgresql84
+    configure.args-append   --with-pgsql-libs=${prefix}/lib/postgresql84
+    configure.args-delete   --with-mysql-includes
+}
